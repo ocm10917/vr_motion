@@ -1,25 +1,25 @@
-#include "MyActor.h"
+#include "UDPActor.h"
 #include "Networking.h"
 #include "Sockets.h"
 #include "SocketSubsystem.h"
 
-AMyActor::AMyActor()
+AUDPActor::AUDPActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-void AMyActor::BeginPlay()
+void AUDPActor::BeginPlay()
 {
 	Super::BeginPlay();
-	StartUDPReceiver(TEXT("MySocket"), TEXT("0.0.0.0"), 9876);
+	StartUDPReceiver(TEXT("UDPSocket"), TEXT("127.0.0.1"), 9876);
 }
 
-void AMyActor::Tick(float DeltaTime)
+void AUDPActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-void AMyActor::StartUDPReceiver(const FString& YourChosenSocketName, const FString& TheIP, const int32 ThePort)
+void AUDPActor::StartUDPReceiver(const FString& YourChosenSocketName, const FString& TheIP, const int32 ThePort)
 {
 	FIPv4Endpoint Endpoint(FIPv4Address::Any, ThePort);
 
@@ -33,11 +33,11 @@ void AMyActor::StartUDPReceiver(const FString& YourChosenSocketName, const FStri
 	ListenSocket->SetReceiveBufferSize(2 * 1024 * 1024, NewSize);
 
 	UDPReceiver = new FUdpSocketReceiver(ListenSocket, FTimespan::FromMilliseconds(100), TEXT("UDP RECEIVER"));
-	UDPReceiver->OnDataReceived().BindUObject(this, &AMyActor::Recv);
+	UDPReceiver->OnDataReceived().BindUObject(this, &AUDPActor::Recv);
 	UDPReceiver->Start();
 }
 
-void AMyActor::Recv(const FArrayReaderPtr& ArrayReaderPtr, const FIPv4Endpoint& EndPt)
+void AUDPActor::Recv(const FArrayReaderPtr& ArrayReaderPtr, const FIPv4Endpoint& EndPt)
 {
 	TArray<float> ReceivedData;
 
@@ -55,7 +55,7 @@ void AMyActor::Recv(const FArrayReaderPtr& ArrayReaderPtr, const FIPv4Endpoint& 
 	// 수신한 float 배열을 출력합니다.
 	for (float Value : ReceivedData)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Received float value: %f"), Value);
+		UE_LOG(LogTemp, Warning, TEXT("Received Float value: %f"), Value);
 	}
 }
 
