@@ -11,7 +11,7 @@ AUDPActor::AUDPActor()
 void AUDPActor::BeginPlay()
 {
 	Super::BeginPlay();
-	StartUDPReceiver(TEXT("UDPSocket"), TEXT("127.0.0.1"), 9876);
+	StartUDPReceiver(TEXT("UDPSocket"), TEXT("0.0.0.0"), 9876);
 }
 
 void AUDPActor::Tick(float DeltaTime)
@@ -35,6 +35,20 @@ void AUDPActor::StartUDPReceiver(const FString& YourChosenSocketName, const FStr
 	UDPReceiver = new FUdpSocketReceiver(ListenSocket, FTimespan::FromMilliseconds(100), TEXT("UDP RECEIVER"));
 	UDPReceiver->OnDataReceived().BindUObject(this, &AUDPActor::Recv);
 	UDPReceiver->Start();
+}
+
+void AUDPActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	
+	delete UDPReceiver;
+	UDPReceiver = nullptr;
+
+	if (ListenSocket)
+	{
+		ListenSocket->Close();
+		ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(ListenSocket);
+	}
 }
 
 void AUDPActor::Recv(const FArrayReaderPtr& ArrayReaderPtr, const FIPv4Endpoint& EndPt)
