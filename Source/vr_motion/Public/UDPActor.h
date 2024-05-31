@@ -26,8 +26,10 @@ public:
 private:
 	FSocket* ListenSocket;
 	FUdpSocketReceiver* UDPReceiver;
+	TArray<float> ReceivedData;
 
 	void StartUDPReceiver(const FString& YourChosenSocketName, const FString& TheIP, const int32 ThePort);
 	void Recv(const FArrayReaderPtr& ArrayReaderPtr, const FIPv4Endpoint& EndPt);
+	// void SendDataToUDPCharacter(const TArray<float>& Data);
 };
 

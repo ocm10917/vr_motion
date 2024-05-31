@@ -53,7 +53,7 @@ void AUDPActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void AUDPActor::Recv(const FArrayReaderPtr& ArrayReaderPtr, const FIPv4Endpoint& EndPt)
 {
-	TArray<float> ReceivedData;
+	ReceivedData.Empty();
 
 	// float 배열의 길이를 구합니다.
 	int32 NumFloats = ArrayReaderPtr->Num() / sizeof(float);
@@ -65,12 +65,15 @@ void AUDPActor::Recv(const FArrayReaderPtr& ArrayReaderPtr, const FIPv4Endpoint&
 		*ArrayReaderPtr << Value;
 		ReceivedData.Add(Value);
 	}
-
+	
 	// 수신한 float 배열을 출력합니다.
 	for (float Value : ReceivedData)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Received Float value: %f"), Value);
 	}
+
+	// 수신한 데이터를 UDPCharacter로 보냅니다
+	// SendDataToUDPCharacter(ReceivedData);
 }
 
 
