@@ -30,11 +30,11 @@ void ASCharacter::Tick(float DeltaTime)
 }
 
 // Called to bind functionality to input
-void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-}
+// void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+// {
+// 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+//
+// }
 
 void ASCharacter::SetReceivedData(const TArray<float>& Data)
 {
