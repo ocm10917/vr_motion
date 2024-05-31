@@ -1,7 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "SCharacter.h"
+#include "Components/SkeletalMeshComponent.h" // SkeletalMeshComponent 헤더 추가
 
 // Sets default values
 ASCharacter::ASCharacter()

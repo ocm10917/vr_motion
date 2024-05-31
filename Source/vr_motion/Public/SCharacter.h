@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -26,8 +24,8 @@ public:
 	// Called to bind functionality to input
 	// virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void SetReceivedData(const TArray<float>& Data);  // MyActor에서 데이터를 설정할 수 있도록 하는 함수
+	void SetReceivedData(const TArray<float>& Data);  // UDPActor에서 데이터를 설정할 수 있도록 하는 함수
 
 private:
-	TArray<float> ReceivedData; // 수신된 데이터를 저장할 변수
+	TArray<float> ReceivedData;
 };
