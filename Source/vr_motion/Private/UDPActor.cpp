@@ -2,6 +2,8 @@
 #include "Networking.h"
 #include "Sockets.h"
 #include "SocketSubsystem.h"
+#include "SCharacter.h"
+#include "EngineUtils.h"  // TActorIterator 사용을 위해 필요
 
 AUDPActor::AUDPActor()
 {
@@ -17,6 +19,9 @@ void AUDPActor::BeginPlay()
 void AUDPActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// 수신한 데이터를 SCharacter로 보냅니다
+	SendDataToSCharacter(ReceivedData);
 }
 
 void AUDPActor::StartUDPReceiver(const FString& YourChosenSocketName, const FString& TheIP, const int32 ThePort)
@@ -67,13 +72,25 @@ void AUDPActor::Recv(const FArrayReaderPtr& ArrayReaderPtr, const FIPv4Endpoint&
 	}
 	
 	// 수신한 float 배열을 출력합니다.
-	for (float Value : ReceivedData)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Received Float value: %f"), Value);
-	}
+	// for (float Value : ReceivedData)
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT("Received Float value: %f"), Value);
+	// }
 
-	// 수신한 데이터를 UDPCharacter로 보냅니다
-	// SendDataToUDPCharacter(ReceivedData);
+	
+}
+
+void AUDPActor::SendDataToSCharacter(const TArray<float>& Data)
+{
+	// 현재 맵에서 ASCharacter를 찾습니다.
+	for (TActorIterator<ASCharacter> It(GetWorld()); It; ++It)
+	{
+		ASCharacter* Character = *It;
+		if (Character)
+		{
+			Character->SetReceivedData(Data);
+		}
+	}
 }
 
 
