@@ -11,7 +11,7 @@ AUDPActor::AUDPActor()
 void AUDPActor::BeginPlay()
 {
 	Super::BeginPlay();
-	StartUDPReceiver(TEXT("UDPSocket"), TEXT("127.0.0.1"), 9876);
+	StartUDPReceiver(TEXT("UDPSocket"), TEXT("0.0.0.0"), 9876);
 }
 
 void AUDPActor::Tick(float DeltaTime)
