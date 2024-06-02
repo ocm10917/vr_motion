@@ -1,41 +1,46 @@
 #include "SCharacter.h"
-#include "Components/SkeletalMeshComponent.h" // SkeletalMeshComponent 헤더 추가
 
 // Sets default values
 ASCharacter::ASCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
-// Called when the game starts or when spawned
 void ASCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
-// Called every frame
 void ASCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	for (float Value : ReceivedData)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Received float value in Tick: %f"), Value);
-	}
 }
 
-// Called to bind functionality to input
-// void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-// {
-// 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-//
-// }
-
-void ASCharacter::SetReceivedData(const TArray<float>& Data)
+void ASCharacter::SetReceivedData(const TArray<FVector>& Data)
 {
 	ReceivedData = Data;
 }
 
+const TArray<FVector>& ASCharacter::GetReceivedData() const
+{
+	return ReceivedData;
+}
+
+void ASCharacter::SetReceivedDataAtIndex(int32 Index, const FVector& Data)
+{
+	if (ReceivedData.IsValidIndex(Index))
+	{
+		ReceivedData[Index] = Data;
+	}
+}
+
+FVector ASCharacter::GetReceivedDataAtIndex(int32 Index) const
+{
+	if (ReceivedData.IsValidIndex(Index))
+	{
+		return ReceivedData[Index];
+	}
+	
+	return FVector::ZeroVector; // 유효하지 않은 인덱스일 경우 기본값 반환
+}

@@ -2,7 +2,7 @@
 #include "Networking.h"
 #include "Sockets.h"
 #include "SocketSubsystem.h"
-#include "SCharacter.h"
+#include "SCharacter.h" // ASCharacter 헤더 포함
 #include "EngineUtils.h"  // TActorIterator 사용을 위해 필요
 
 AUDPActor::AUDPActor()
@@ -13,15 +13,19 @@ AUDPActor::AUDPActor()
 void AUDPActor::BeginPlay()
 {
 	Super::BeginPlay();
-	StartUDPReceiver(TEXT("UDPSocket"), TEXT("127.0.0.1"), 9876);
+	StartUDPReceiver(TEXT("UDPSocket"), TEXT("127.0.0.1"), 9876);  // UDP 리시버 시작
 }
 
 void AUDPActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// 수신한 데이터를 SCharacter로 보냅니다
-	SendDataToSCharacter(ReceivedData);
+	// UDP 수신 후 ASCharacter로 데이터 전송
+	if (ReceivedData.Num() > 0)
+	{
+		SendDataToSCharacter(ReceivedData);
+		ReceivedData.Empty();  // 데이터 처리 후 비워줌
+	}
 }
 
 void AUDPActor::StartUDPReceiver(const FString& YourChosenSocketName, const FString& TheIP, const int32 ThePort)
@@ -58,29 +62,44 @@ void AUDPActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void AUDPActor::Recv(const FArrayReaderPtr& ArrayReaderPtr, const FIPv4Endpoint& EndPt)
 {
-	ReceivedData.Empty();
+	TArray<float> RawData;
+	RawData.Empty();
 
 	// float 배열의 길이를 구합니다.
 	int32 NumFloats = ArrayReaderPtr->Num() / sizeof(float);
-
+	
 	// 바이트 데이터를 float 배열로 변환합니다.
 	for (int32 i = 0; i < NumFloats; ++i)
 	{
 		float Value;
 		*ArrayReaderPtr << Value;
-		ReceivedData.Add(Value);
+		RawData.Add(Value);
 	}
-	
-	// 수신한 float 배열을 출력합니다.
-	// for (float Value : ReceivedData)
-	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("Received Float value: %f"), Value);
-	// }
 
-	
+	// 기존 데이터를 비웁니다.
+	ReceivedData.Empty();
+
+	// 좌표 변환을 수행합니다.
+	for (int32 i = 0; i < RawData.Num(); i += 3)
+	{
+		float MediapipeX = RawData[i];
+		float MediapipeY = RawData[i + 1];
+		float MediapipeZ = RawData[i + 2];
+
+		FVector ConvertedCoord = ConvertMediapipeToUnreal(MediapipeX, MediapipeY, MediapipeZ);
+		ReceivedData.Add(ConvertedCoord);
+	}
 }
 
-void AUDPActor::SendDataToSCharacter(const TArray<float>& Data)
+FVector AUDPActor::ConvertMediapipeToUnreal(float X, float Y, float Z)
+{
+	// 좌표 변환 및 스케일 적용 (예시)
+	FVector ScaleVector(40.f, 30.f, 40.f);
+	
+	return FVector((X - 0.5f) * ScaleVector.X, (0.5f - Y) * ScaleVector.Y, Z * ScaleVector.Z);
+}
+
+void AUDPActor::SendDataToSCharacter(const TArray<FVector>& Data)
 {
 	// 현재 맵에서 ASCharacter를 찾습니다.
 	for (TActorIterator<ASCharacter> It(GetWorld()); It; ++It)
@@ -92,5 +111,3 @@ void AUDPActor::SendDataToSCharacter(const TArray<float>& Data)
 		}
 	}
 }
-
-

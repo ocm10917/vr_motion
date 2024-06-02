@@ -26,10 +26,11 @@ public:
 private:
 	FSocket* ListenSocket;
 	FUdpSocketReceiver* UDPReceiver;
-	TArray<float> ReceivedData;
+	TArray<FVector> ReceivedData;
 
 	void StartUDPReceiver(const FString& YourChosenSocketName, const FString& TheIP, const int32 ThePort);
 	void Recv(const FArrayReaderPtr& ArrayReaderPtr, const FIPv4Endpoint& EndPt);
-	void SendDataToSCharacter(const TArray<float>& Data);
-};
+	void SendDataToSCharacter(const TArray<FVector>& Data);
 
+	FVector ConvertMediapipeToUnreal(float X, float Y, float Z);
+};

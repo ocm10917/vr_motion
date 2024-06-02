@@ -21,11 +21,24 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	// virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	// 변환된 좌표를 설정하는 함수
+	UFUNCTION(BlueprintCallable, Category = "Data")
+	void SetReceivedData(const TArray<FVector>& Data);
 
-	void SetReceivedData(const TArray<float>& Data);  // UDPActor에서 데이터를 설정할 수 있도록 하는 함수
+	// Getter 함수
+	UFUNCTION(BlueprintCallable, Category = "Data")
+	const TArray<FVector>& GetReceivedData() const;
+
+	// 특정 인덱스의 데이터를 설정하는 함수
+	UFUNCTION(BlueprintCallable, Category = "Data")
+	void SetReceivedDataAtIndex(int32 Index, const FVector& Data);
+
+	// 특정 인덱스의 데이터를 반환하는 함수
+	UFUNCTION(BlueprintCallable, Category = "Data")
+	FVector GetReceivedDataAtIndex(int32 Index) const;
 
 private:
-	TArray<float> ReceivedData;
+	// 수신된 데이터를 저장할 변수, 블루프린트에서 볼 수 있고 수정 가능하도록 설정
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Data", meta = (AllowPrivateAccess = "true", ToolTip = "Array of received data points"))
+	TArray<FVector> ReceivedData;
 };

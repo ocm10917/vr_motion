@@ -8,7 +8,7 @@ public class vr_motion : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput","Sockets", "Networking" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput","Sockets", "Networking","AnimGraphRuntime" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
