@@ -93,10 +93,8 @@ void AUDPActor::Recv(const FArrayReaderPtr& ArrayReaderPtr, const FIPv4Endpoint&
 
 FVector AUDPActor::ConvertMediapipeToUnreal(float X, float Y, float Z)
 {
-	// 좌표 변환 및 스케일 적용 (예시)
-	FVector ScaleVector(40.f, 30.f, 40.f);
-	
-	return FVector((X - 0.5f) * ScaleVector.X, (0.5f - Y) * ScaleVector.Y, Z * ScaleVector.Z);
+	FVector ScaleVector(100.f, 100.f, 100.f);
+	return FVector(Y * ScaleVector.X, Z * ScaleVector.Y, -X * ScaleVector.Z);
 }
 
 void AUDPActor::SendDataToSCharacter(const TArray<FVector>& Data)
